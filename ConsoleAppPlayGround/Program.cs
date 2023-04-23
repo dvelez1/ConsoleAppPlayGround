@@ -2,11 +2,14 @@
 using ConsoleAppPlayGround.Models;
 using ConsoleAppPlayGround.service;
 
-var pathToExcel = @"C:\Users\Dennis\Documents\temp_location\customers.xlsx";
-var sheetName = "customer";
-var jsonCustomer =  ReadExcelFile.ReadExcelFileAndConvertToJson(pathToExcel, sheetName);
+System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-if (ReadExcelFile.ValidateJsonCustmerSchema(jsonCustomer))
+var pathToExcel = @"C:\Users\Dennis\Documents\temp_location\customers1.xlsx";
+var sheetName = "customer";
+var jsonCustomer =  await ReadExcelFile.ReadExcelFileAndConvertToJson(pathToExcel, sheetName);
+var json = await ReadExcelFile.ConvertExcelToJson();
+
+if (ReadExcelFile.ValidateJsonCustmerSchema(jsonCustomer, typeof(List<customer>)).GetAwaiter().GetResult())
     Console.WriteLine($"Valid Schema Validation. Please, see excel conversion to JSON. {jsonCustomer}");
 else
     Console.WriteLine("Invalid Json Schema");

@@ -1,4 +1,5 @@
 ﻿using ConsoleAppPlayGround.Models;
+using ExcelDataReader;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
@@ -16,15 +17,14 @@ namespace ConsoleAppPlayGround.service
 {
     public class ReadExcelFile
     {
-
-        public static string ReadExcelFileAndConvertToJson(string pathToExcel, string sheetName)
+        public static async Task<string> ReadExcelFileAndConvertToJson(string pathToExcel, string sheetName)
         {
             //var pathToExcel = @"C:\Users\Dennis\Documents\temp_location\customers.xlsx";
             //var sheetName = "customer";
 
             //This connection string works if you have Office 2007+ installed and your 
             //data is saved in a .xlsx file
-            var connectionString = String.Format(@"
+            var connectionString = string.Format(@"
             Provider=Microsoft.ACE.OLEDB.12.0;
             Data Source={0};
             Extended Properties=""Excel 12.0 Xml;HDR=YES""
@@ -65,15 +65,46 @@ namespace ConsoleAppPlayGround.service
 
         }
 
+        //https://stackoverflow.com/questions/57378535/read-exel-files-dynamically-not-depending-on-rows-and-write-json-c-sharp
+        public static async Task<string> ConvertExcelToJson()
+        {
+            var inFilePath = @"C:\Users\Dennis\Documents\temp_location\customers.xlsx";
+            var json = string.Empty;
+
+            //var pathToExcel = @"C:\Users\Dennis\Documents\temp_location\customers.xlsx";
+            //var sheetName = "customer";
+
+
+            using (var inFile = System.IO.File.Open(inFilePath, FileMode.Open, FileAccess.Read))
+
+            using (var reader = ExcelReaderFactory.CreateReader(inFile, new ExcelReaderConfiguration()
+            { FallbackEncoding = Encoding.GetEncoding(1252) }))
+            {
+                var ds = reader.AsDataSet(new ExcelDataSetConfiguration()
+                {
+                    ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
+                    {
+                        UseHeaderRow = true
+                    }
+                });
+                var table = ds.Tables[0];
+                json = JsonConvert.SerializeObject(table, Formatting.Indented);
+            }
+
+            return json;
+        }
+
         //https://www.newtonsoft.com/jsonschema
-        public static bool ValidateJsonCustmerSchema(string json)
+        //https://www.newtonsoft.com/jsonschema/help/html/CustomJsonValidator.htm
+        public static async Task<bool> ValidateJsonCustmerSchema(string json , Type objectType)
         {
             JSchemaGenerator generator = new JSchemaGenerator();
-            JSchema schema = generator.Generate(typeof(customer));
-
+            //JSchema schema = generator.Generate(typeof(List<customer>));
+            JSchema schema = generator.Generate(objectType);
             JArray jsonArray = JArray.Parse(json);
-            JObject person = JObject.Parse(jsonArray[0].ToString());
-            return person.IsValid(schema);
+            //JObject person = JObject.Parse(jsonArray[0].ToString());
+            IList<string> messages;
+            return jsonArray.IsValid(schema, out messages);
         }
 
     }
