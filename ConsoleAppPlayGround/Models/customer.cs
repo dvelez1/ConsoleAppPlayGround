@@ -17,6 +17,8 @@ namespace ConsoleAppPlayGround.Models
         public string City { get; set; }
         [JsonProperty("state", Required = Required.AllowNull)]
         public string State { get; set; }
+        [JsonProperty("id", Required = Required.Always)]
+        public int Id { get; set; }
     }
 }
 
