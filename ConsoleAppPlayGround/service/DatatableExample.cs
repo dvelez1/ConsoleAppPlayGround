@@ -10,6 +10,8 @@ namespace ConsoleAppPlayGround.service
     public class DatatableExample
     {
 
+        // GERALD, Para que lo utilices de ejemplo para lo que estás haciendo. DVG 11-01-2023
+
         public static void ProofOfConcept()
         {
             DataTable myTable = new DataTable("Example");
@@ -52,34 +54,23 @@ namespace ConsoleAppPlayGround.service
             {
 
                 if (string.IsNullOrWhiteSpace(dr["Qualifier_" + i].ToString()))
-                {
-                    result = string.IsNullOrWhiteSpace(result) ? string.Empty : result.TrimEnd(',');
-                    return result;
-                }
+                    return string.IsNullOrWhiteSpace(result) ? string.Empty : result.TrimEnd(',');
+
 
                 if (dr["Qualifier_" + i].ToString() == "trigger_value")
-                {
-                    result = result +  (dr["Qualifier_" + i].ToString() + " <--> " + (dr["Value_" + i].ToString() == "1" ? "Yes" + "," : "No" + ","));
-                }
+                    result = result + (dr["Qualifier_" + i].ToString() + " <--> " + (dr["Value_" + i].ToString() == "1" ? "Yes" + "," : "No" + ","));
                 else
-                {
-                    result = result + ( dr["Qualifier_" + i].ToString() + " <--> " + dr["Value_" + i].ToString() + ",");
-                }
-
-
+                    result = result + (dr["Qualifier_" + i].ToString() + " <--> " + dr["Value_" + i].ToString() + ",");
 
             }
 
 
-            result = string.IsNullOrWhiteSpace(result) ? string.Empty : result.TrimEnd(',');
+            return string.IsNullOrWhiteSpace(result) ? string.Empty : result.TrimEnd(',');
 
-
-            return result;
         }
 
         private static void PrintTable(DataTable dt)
         {
-            Console.WriteLine(dt.Rows.Count);
             foreach (DataRow dataRow in dt.Rows)
             {
                 Console.WriteLine(" ");
