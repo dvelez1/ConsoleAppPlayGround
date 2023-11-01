@@ -16,5 +16,8 @@ var sheetName = "customer";
 
 
 
-ParallelExampleNotAsync.RunParallelExample(600, 800);
+//ParallelExampleNotAsync.RunParallelExample(600, 800);
+
+DatatableExample.ProofOfConcept();
+
 Console.ReadLine();

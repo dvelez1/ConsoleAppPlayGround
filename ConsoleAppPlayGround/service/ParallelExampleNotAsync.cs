@@ -21,9 +21,7 @@ public class ParallelExampleNotAsync
                 );
 
         myList.Add("Job 3: Manual Entry");
-
         Console.WriteLine(string.Join(" --> ", myList));
-
 
     }
 
